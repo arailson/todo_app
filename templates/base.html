@@ -8,12 +8,26 @@
 </head>
 <body>
     <h1>Lista de tarefas</h1>
-    <form action="">
+    <form action="/add" method="POST">
         <div>
             <label for="title">Titulo da tarefa</label>
-            <input type="text" name="tile" placeholder="Digite a tarefa..."><br>
+            <input type="text" name="title" placeholder="Digite a tarefa..."><br>
             <button type="submit">Adicionar</button>
         </div>
     </form>
+
+    {% for todo in todo_list  %}
+        <p> {{ todo.id }} | {{ todo.title }} </p>
+
+        {% if not todo.complete %}
+            <span>Not Complete</span>
+        {% else %}
+            <span>Complete</span>
+        {% endif %}
+
+        <a href="/">Update</a>
+        <a href="/">Delete</a>
+    {% endfor %}
+
 </body>
 </html>
