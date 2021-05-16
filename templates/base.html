@@ -4,30 +4,54 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
     <title>Lista de tarefas</title>
 </head>
 <body>
-    <h1>Lista de tarefas</h1>
-    <form action="/add" method="POST">
-        <div>
-            <label for="title">Titulo da tarefa</label>
-            <input type="text" name="title" placeholder="Digite a tarefa..."><br>
-            <button type="submit">Adicionar</button>
+    <div style="margin-top: 50px;" class="ui container">
+        <h1 class="ui center aligned header">Lista de tarefas</h1>
+
+        <div class="ui piled segments">
+            <div class="ui segment">
+                <form class="ui form" action="/add" method="POST">
+
+                    <div class="field">
+                        <label for="title">Titulo da tarefa</label>
+                        <div class="ui fluid icon input">
+                            <input type="text" name="title" placeholder="Digite a tarefa...">
+                                <div class="ui calendar" id="standard_calendar">
+                                    <div class="ui input left icon">
+                                        <i class="calendar icon"></i>
+                                        <input type="text" placeholder="Data">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <input type="hidden" name="todo_date" id="todo_date">
+                    <button class="ui button" type="submit">Adicionar</button>
+                </form>
+            </div>
         </div>
-    </form>
 
-    {% for todo in todo_list  %}
-        <p> {{ todo.id }} | {{ todo.title }} </p>
+        {% for todo in todo_list %}
+        <div class="ui segment">
+            <div class="ui grid">
+                <div class="column">
 
-        {% if not todo.complete %}
-            <span>Not Complete</span>
-        {% else %}
-            <span>Complete</span>
-        {% endif %}
+                    <a class="ui {{ 'green' if todo.complete else 'red' }} ribbon label">{{ 'Completo' if todo.complete else 'Incompleto' }}</a>
+                    <p class="ui big header"><i class="{{ 'check' if todo.complete }} square outline icon"></i>{{ todo.title }} </p>
+                    <a class="ui teal basic button" href="/update/{{ todo.id }}">Atualizar</a>
+                    <a class="ui red basic button" href="/delete/{{ todo.id }}">Remover</a>
 
-        <a href="/">Update</a>
-        <a href="/">Delete</a>
-    {% endfor %}
+                </div>
+            </div>
 
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+    <script src="{{url_for('static', filename='main.js')}}"></script>
 </body>
 </html>
