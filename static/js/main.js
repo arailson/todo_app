@@ -19,8 +19,8 @@ $('#standard_calendar').calendar({
                 return `${day} de ${month} de ${year}`
             }
         },
-        onSelect: function(date,mode) {
-            document.querySelector('#todo_date').value = date.toISOString().split('T')[0];
+        onChange: function(date, displayText, mode) {
+            document.querySelector('#todo_date').value = moment(date).format('YYYY-MM-DD');
             return true;
         }
 });

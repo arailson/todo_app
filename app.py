@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,23 +12,42 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     complete = db.Column(db.Boolean)
+    date = db.Column(db.Date)
 
 
-def _sortTodoItems(item):
-    return item.complete
+def _arrange_items(todo_list):
+    items = filter(lambda todo: not todo.complete and todo.date, todo_list)
+    result = sorted(items, key=lambda x: x.date)
+
+    items = filter(lambda todo: not todo.complete and not todo.date, todo_list)
+    result += sorted(items, key=lambda todo: todo.title)
+
+    items = filter(lambda todo: todo.complete and todo.date, todo_list)
+    result += sorted(items, key=lambda x: x.date)
+
+    items = filter(lambda todo: todo.complete and not todo.date, todo_list)
+    result += sorted(items, key=lambda todo: todo.title)
+
+    return result
 
 
 @app.route("/")
 def index():
-    todo_list = Todo.query.all()
-    todo_list = sorted(todo_list, key=_sortTodoItems)
-    return render_template("base.html", todo_list=todo_list)
+    todo_list = _arrange_items(Todo.query.all())
+    return render_template(
+        "base.html", todo_list=todo_list, today=datetime.date(datetime.now())
+    )
 
 
 @app.route("/add", methods=["POST"])
 def add():
+    try:
+        date = datetime.fromisoformat(request.form.get("todo_date"))
+    except:
+        date = None
+
     title = request.form.get("title")
-    new_todo = Todo(title=title, complete=False)
+    new_todo = Todo(title=title, complete=False, date=date)
     db.session.add(new_todo)
     db.session.commit()
     return redirect(url_for("index"))
