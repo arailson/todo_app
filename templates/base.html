@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/site.css')}}">
     <title>Lista de tarefas</title>
 </head>
 <body>
@@ -44,9 +45,16 @@
                     <a class="ui red basic button" href="/delete/{{ todo.id }}">Remover</a>
                 </div>
 
-                <div class="four wide right floated column">
+                <div class="six wide right floated column">
                     {% if todo.date %}
-                    <h3 class="ui right floated {{ 'green' if todo.complete else 'red' if (todo.date < today) else 'yellow' }} header">{{ todo.date }}</h3>
+                    <div class="row todo-date">
+                        <h3 class="ui right floated {{ 'green' if todo.complete else 'red' if (todo.date < today) else 'yellow' }} header">{{ todo.date }}</h3>
+                    </div>
+                        {% if not todo.complete %}
+                        <div class="row todo-date-comment">
+                            <p>{{ todo.message }}</p>
+                        </div>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
